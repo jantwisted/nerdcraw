@@ -98,10 +98,11 @@ def get_content(_page):
     """
     _strip3 = re.compile(r'(?<=\<i>)(.*)(?=</i>)')
     _subc1 = 0
+    print "\n\n"
     for lines in _page.readlines():
         if re.search("<i>", lines):
             print textwrap.fill(textwrap.dedent(re.sub('<[^>]*>', '', lines)), 80)
-
+    print "\n\n"
             
 
 def get_url(index, _url_dict):
