@@ -1,3 +1,4 @@
+#!/usr/bin/python
 #<NerdCraw, an instant slashdot.org reader>
 #Copyright (C) <2014> <Janith Perera>
 
@@ -27,7 +28,7 @@
 import urllib
 import re
 import sys
-
+import textwrap
 
 def get_headings(_webpage):
     """
@@ -71,7 +72,7 @@ def get_headings(_webpage):
                             index_in = raw_input("enter title index to load (type 'q' to abort): ")
                             if index_in != 'q':
                                 # Load the sub page of a heading"
-                                load_dummy(get_url(int(index_in), url)) #must change
+				get_content(load_url(get_url(int(index_in), url)))
                             else : sys.exit()
                         else:
                             print "bad answer!"
@@ -82,6 +83,26 @@ def get_headings(_webpage):
                 continue
         if re.search("<header class=\"story-header\"",lines):
             _hflag = 1
+        #end of for loop
+
+    index_in = raw_input("enter title index to load (type 'q' to abort): ")
+    if index_in != 'q':
+        # Load the sub page of a heading"
+        get_content(load_url(get_url(int(index_in), url)))
+
+         
+
+def get_content(_page):
+    """
+    Prints the content of sub page
+    """
+    _strip3 = re.compile(r'(?<=\<i>)(.*)(?=</i>)')
+    _subc1 = 0
+    for lines in _page.readlines():
+        if re.search("<i>", lines):
+            print textwrap.fill(textwrap.dedent(re.sub('<[^>]*>', '', lines)), 80)
+
+            
 
 def get_url(index, _url_dict):
     """
@@ -89,9 +110,7 @@ def get_url(index, _url_dict):
     """
     return _url_dict[index]
 
-def load_dummy(_url):
-    #remove this method after testing
-    print _url
+
 
 def load_url(_url):
     """
@@ -102,6 +121,8 @@ def load_url(_url):
     except AttributeError: #modify this
         print "bad url!"
         sys.exit()
+
+
 
 def intro():
     """
