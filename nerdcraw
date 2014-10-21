@@ -127,17 +127,6 @@ def load_url(_url):
         sys.exit()
 
 
-
-def intro_back():
-    """
-    Prints info header
-    """
-    print "\n"
-    print "+-----------------------------------------------+"
-    print "|                 nerdcraw 0.3                  |"
-    print "+-----------------------------------------------+"
-    print "\n\n"
-
 def intro():
     """
     Prints intro header
