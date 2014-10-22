@@ -29,6 +29,8 @@ import urllib
 import re
 import sys
 import textwrap
+import tempfile, os
+
 
 def get_headings(_webpage):
     """
@@ -102,7 +104,20 @@ def get_content(_page):
         if re.search("elips", lines):
             _subc1 = 1
         if re.search("<i>", lines) and _subc1 == 1:
-            print textwrap.fill(textwrap.dedent(re.sub('<[^>]*>', '', lines)), 80)
+            nbody = textwrap.fill(textwrap.dedent(re.sub('<[^>]*>', '', lines)), 80)
+            fd, path = tempfile.mkstemp(suffix='.txt', text=True)
+            try:
+                os.close(fd)
+                tempfd = open(path, 'w+')
+                tempfd.write(nbody)
+                tempfd.flush()
+                if os.getenv('EDITOR') != None:
+                    os.system('%s %s' % (os.getenv('EDITOR'), path))
+                else:
+                    os.system('%s %s' % ('vi', path))
+            finally:
+                os.unlink(path)
+                
         if _subc1 == 1 and re.search("</div>", lines):
             _subc1 = 0 
     print "\n\n"
@@ -132,7 +147,7 @@ def intro():
     Prints intro header
     """
     print "\n"
-    print "NerdCraw 0.3, a crawler for nerdy news."
+    print "NerdCraw 0.3.1, a crawler for nerdy news."
     print "See 'README.md' for more information."
     print "This is free software: you are free to change and redistribute it."
     print "There is NO WARRANTY, to the extent permitted by law."
