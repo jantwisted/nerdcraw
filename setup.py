@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='nerdcraw',
-      version='0.3',
+      version='0.3.1.2',
       description='Read slashdot.org without leaving\
       the terminal',
       classifiers=[

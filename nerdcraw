@@ -49,6 +49,7 @@ def get_headings(_webpage):
     _cc = 1
     # url dictionary
     url = {}
+    h_dict = {}
     
     for lines in _webpage.readlines():
         # This section strips the headings from loaded webpage
@@ -58,8 +59,9 @@ def get_headings(_webpage):
             _hflag = 0
         if _hflag == 1:
             try:
-                print "["+str(_seq)+"] "+re.sub(_strip2, '', _strip1.search(lines).\
-                                                group())+"\n"
+                h_raw = re.sub(_strip2, '', _strip1.search(lines).group())
+                h_dict.update({_seq:h_raw})
+                print "["+str(_seq)+"] "+h_raw+"\n"
                 url.update({_seq:_strip2.search(_strip1.search(lines).group()).group().\
                             replace('<a href=\"','http:').replace('\">','')})
                 _seq += 1
@@ -74,7 +76,7 @@ def get_headings(_webpage):
                             index_in = raw_input("enter title index to load (type 'q' to abort): ")
                             if index_in != 'q':
                                 # Load the sub page of a heading"
-				get_content(load_url(get_url(int(index_in), url)))
+				get_content(load_url(get_url(int(index_in), url)), h_dict[int(index_in)])
                             else : sys.exit()
                         else:
                             print "bad answer!"
@@ -94,17 +96,17 @@ def get_headings(_webpage):
 
          
 
-def get_content(_page):
+def get_content(_page, _heading):
     """
     Prints the content of sub page
     """
-    _subc1 = 0
+    _subc1 = 0;
     print "\n\n"
     for lines in _page.readlines():
         if re.search("elips", lines):
             _subc1 = 1
         if re.search("<i>", lines) and _subc1 == 1:
-            nbody = textwrap.fill(textwrap.dedent(re.sub('<[^>]*>', '', lines)), 80)
+            nbody = _heading+"\n"+'-' * len(_heading)+"\n\n"+textwrap.fill(textwrap.dedent(re.sub('<[^>]*>', '', lines)), 80)
             fd, path = tempfile.mkstemp(suffix='.txt', text=True)
             try:
                 os.close(fd)
@@ -147,7 +149,7 @@ def intro():
     Prints intro header
     """
     print "\n"
-    print "NerdCraw 0.3.1, a crawler for nerdy news."
+    print "NerdCraw 0.3.1.2, a crawler for nerdy news."
     print "See 'README.md' for more information."
     print "This is free software: you are free to change and redistribute it."
     print "There is NO WARRANTY, to the extent permitted by law."
