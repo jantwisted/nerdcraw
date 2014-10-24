@@ -75,7 +75,7 @@ def get_headings(_webpage):
                         elif con == 'n':
                             index_in = raw_input("enter title index to load (type 'q' to abort): ")
                             if index_in != 'q':
-                                # Load the sub page of a heading"
+                                # Load the sub page of a heading
 				get_content(load_url(get_url(int(index_in), url)), h_dict[int(index_in)])
                             else : sys.exit()
                         else:
@@ -91,8 +91,8 @@ def get_headings(_webpage):
 
     index_in = raw_input("enter title index to load (type 'q' to abort): ")
     if index_in != 'q':
-        # Load the sub page of a heading"
-        get_content(load_url(get_url(int(index_in), url)))
+        # Load the sub page of a heading
+        get_content(load_url(get_url(int(index_in), url)), h_dict[int(index_in)])
 
          
 
@@ -100,30 +100,33 @@ def get_content(_page, _heading):
     """
     Prints the content of sub page
     """
-    _subc1 = 0;
+    _subc2 = _subc1 = 0;
+    nbody = _heading+"\n"+'-' * len(_heading)+"\n\n"
     print "\n\n"
     for lines in _page.readlines():
         if re.search("elips", lines):
             _subc1 = 1
         if re.search("<i>", lines) and _subc1 == 1:
-            nbody = _heading+"\n"+'-' * len(_heading)+"\n\n"+textwrap.fill(textwrap.dedent(re.sub('<[^>]*>', '', lines)), 80)
-            fd, path = tempfile.mkstemp(suffix='.txt', text=True)
-            try:
-                os.close(fd)
-                tempfd = open(path, 'w+')
-                tempfd.write(nbody)
-                tempfd.flush()
-                if os.getenv('EDITOR') != None:
-                    os.system('%s %s' % (os.getenv('EDITOR'), path))
-                else:
-                    os.system('%s %s' % ('vi', path))
-            finally:
-                os.unlink(path)
-                
+            _subc2 = 1
+        if _subc2 == 1 and _subc1 == 1:
+            nbody += "\n"+textwrap.fill(textwrap.dedent(re.sub('<[^>]*>', '', lines)), 80)                
         if _subc1 == 1 and re.search("</div>", lines):
-            _subc1 = 0 
+            _subc2 = _subc1 = 0 
+
+    fd, path = tempfile.mkstemp(suffix='.txt', text=True)
+    try:
+        os.close(fd)
+        tempfd = open(path, 'w+')
+        tempfd.write(nbody)
+        tempfd.flush()
+        if os.getenv('EDITOR') != None:
+            os.system('%s %s' % (os.getenv('EDITOR'), path))
+        else:
+            os.system('%s %s' % ('vi', path))
+    finally:
+        os.unlink(path)
     print "\n\n"
-            
+
 
 def get_url(index, _url_dict):
     """
@@ -149,7 +152,7 @@ def intro():
     Prints intro header
     """
     print "\n"
-    print "NerdCraw 0.3.1.2, a crawler for nerdy news."
+    print "NerdCraw 0.3.1.3, a crawler for nerdy news."
     print "See 'README.md' for more information."
     print "This is free software: you are free to change and redistribute it."
     print "There is NO WARRANTY, to the extent permitted by law."
