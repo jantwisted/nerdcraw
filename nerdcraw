@@ -29,6 +29,12 @@ import urllib
 import re
 import sys
 import textwrap
+import signal
+
+def sig_handler(signal, frame):
+    print "\nnerdcraw stopped..., bye!"
+    sys.exit(0)
+
 
 def get_headings(_webpage):
     """
@@ -140,6 +146,7 @@ def intro():
 
 
 if __name__=='__main__':
+    signal.signal(signal.SIGINT, sig_handler)
     intro()
     get_headings(load_url("http://beta.slashdot.org/"))
     
